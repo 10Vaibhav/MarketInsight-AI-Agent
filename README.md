@@ -14,7 +14,7 @@ MarketInsight AI Agent is a streamlined AI agent built with Streamlit that uses 
 
 ### Dual Interface
 - **CLI Agent** (`agent.py`) - Command-line interface for quick queries
-- **Streamlit Web App** (`streamlit_app.py`) - Interactive web interface with chat history
+- **Streamlit Web App** (`app.py`) - Interactive web interface with chat history
 
 ## **Interface Preview**
 
