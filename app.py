@@ -1,3 +1,5 @@
+from typing import Optional
+from pydantic import BaseModel, Field
 import streamlit as st
 from openai import OpenAI
 import json
@@ -47,6 +49,13 @@ available_tools = {
     "get_company_info": get_company_info,
     "search_symbol": search_symbol
 }
+
+class MyOutputFormat(BaseModel):
+    step: str = Field(..., description="The ID of the step. Example: START, PLAN, OUTPUT, TOOL, OBSERVE")
+    content: Optional[str] = Field(None, description="The optional string content for the step")
+    tool: Optional[str] = Field(None, description="The ID of the tool to call (e.g., get_stock_price, get_company_info, search_symbol)")
+    input: Optional[str] = Field(None, description="The input params for the tool (stock symbol or company name)")
+    output: Optional[str] = Field(None,description="Output of the tool - JSON stringified if structured data")
 
 # Check if API keys are set
 if not st.session_state.api_keys_set:
@@ -145,26 +154,26 @@ else:
 
             while True:
                 try:
-                    response = st.session_state.client.chat.completions.create(
+                    response = st.session_state.client.chat.completions.parse(
                         model="gpt-4o",
-                        response_format={"type": "json_object"},
+                        response_format=MyOutputFormat,
                         messages=st.session_state.messages
                     )
 
                     raw_result = response.choices[0].message.content
                     st.session_state.messages.append({"role": "assistant", "content": raw_result})
-                    parsed_result = json.loads(raw_result)
+                    parsed_result = response.choices[0].message.parsed
 
                     # Handle START step
-                    if parsed_result.get("step") == "START":
-                        content = parsed_result.get("content")
+                    if parsed_result.step == "START":
+                        content = parsed_result.content
                         full_response += f"🔥 {content}\n\n"
                         message_placeholder.markdown(full_response)
                         continue
 
-                    if parsed_result.get("step") == "TOOL":
-                        tool_to_call = parsed_result.get("tool")
-                        tool_input = parsed_result.get("input")
+                    if parsed_result.step == "TOOL":
+                        tool_to_call = parsed_result.tool
+                        tool_input = parsed_result.input
 
                         full_response += f"⚒️ Calling {tool_to_call}({tool_input})\n\n"
                         message_placeholder.markdown(full_response)
@@ -184,14 +193,14 @@ else:
                         })
                         continue
 
-                    if parsed_result.get("step") == "PLAN":
-                        content = parsed_result.get("content")
+                    if parsed_result.step == "PLAN":
+                        content = parsed_result.content
                         full_response += f"🧠 {content}\n\n"
                         message_placeholder.markdown(full_response)
                         continue
 
-                    if parsed_result.get("step") == "OUTPUT":
-                        content = parsed_result.get("content")
+                    if parsed_result.step == "OUTPUT":
+                        content = parsed_result.content
                         full_response += f"🎁 {content}"
                         message_placeholder.markdown(full_response)
                         break
