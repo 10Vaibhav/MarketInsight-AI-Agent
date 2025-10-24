@@ -16,6 +16,20 @@ MarketInsight AI Agent is a streamlined AI agent built with Streamlit that uses 
 - **CLI Agent** (`agent.py`) - Command-line interface for quick queries
 - **Streamlit Web App** (`streamlit_app.py`) - Interactive web interface with chat history
 
+## **Interface Preview**
+
+### API Configuration
+![API Configuration](./public/images/start.png)
+*Configure your OpenAI and Alpha Vantage API keys to get started*
+
+### Stock Information Query
+![Stock Query Example](./public/images/cot.png)
+*Example: Getting stock price information with chain-of-thought reasoning*
+
+### Interactive Chat Interface
+![Chat Interface](./public/images/at.png)
+*Ask questions about any stock in natural language*
+
 **Get your API keys:**
 - OpenAI: https://platform.openai.com/api-keys
 - Alpha Vantage: https://www.alphavantage.co/support/#api-key (Free)

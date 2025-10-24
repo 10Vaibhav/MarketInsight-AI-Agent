@@ -98,7 +98,7 @@ if not st.session_state.api_keys_set:
 
     # Information section
     st.markdown("---")
-    title_image = Image.open("public/images/how.jpg")  # Path to your title image
+    title_image = Image.open("public/images/how.jpg") 
     st.image(title_image, width=250, use_container_width=False, output_format="JPG")
     st.title("How to get API Keys?")
     st.markdown("""
